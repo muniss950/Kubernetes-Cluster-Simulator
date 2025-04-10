@@ -110,7 +110,7 @@ func SchedulePod(pod pod.Pod, nodes map[string]Node, algorithm string) (string, 
     case "first_fit":
         fallthrough
     default:
-        return SchedulePodBestFit(pod, nodes)
+        return SchedulePodFirstFit(pod, nodes)
     }
 }
 
