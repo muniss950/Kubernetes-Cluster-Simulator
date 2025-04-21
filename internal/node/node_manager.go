@@ -72,8 +72,6 @@ func (nm *NodeManager) RestartNode(nodeID string) error {
         return err
     }
 
-    
-    log.Print("shit")
     if err :=RestartNodeContainer(nodeID);  err != nil {
         return err
     }
