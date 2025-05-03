@@ -3,7 +3,7 @@ package main
 import (
 
     "os"
-    "cluster-sim/internal/api"
+    "cluster-sim/api"
 )
 
 func main() {

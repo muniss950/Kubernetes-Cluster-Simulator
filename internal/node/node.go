@@ -94,32 +94,24 @@ func RestartNodeContainer(nodeID string) error {
         return fmt.Errorf("failed to create Docker client: %v", err)
     }
 
-    ctx := context.Background()
+    // ctx := context.Background()
 
     // First stop the container
-    if err := cli.ContainerStop(ctx, nodeID, container.StopOptions{}); err != nil {
-        return fmt.Errorf("failed to stop container: %v", err)
-    }
 
-    // Wait a moment to ensure the container is fully stopped
-    time.Sleep(2 * time.Second)
-
-    // Start the same container again
-    if err := cli.ContainerStart(ctx, nodeID, container.StartOptions{}); err != nil {
-        return fmt.Errorf("failed to start container: %v", err)
-    }
-
-    // Wait a moment to ensure the container is fully started
-    time.Sleep(2 * time.Second)
-
-    // Verify the container is running
-    inspect, err := cli.ContainerInspect(ctx, nodeID)
+    resp, err := cli.ContainerCreate(
+        context.Background(),
+        &container.Config{
+            Image: "python:3.8-slim", // Use a lightweight image
+            Cmd:   []string{"sh", "-c", "while true; do sleep 30; done"},
+        },
+        nil, nil, nil, nodeID)
     if err != nil {
-        return fmt.Errorf("failed to inspect container: %v", err)
+        return err
     }
 
-    if !inspect.State.Running {
-        return fmt.Errorf("container is not running after restart")
+    err = cli.ContainerStart(context.Background(), resp.ID, container.StartOptions{})
+    if err != nil {
+        return err
     }
 
     return nil
